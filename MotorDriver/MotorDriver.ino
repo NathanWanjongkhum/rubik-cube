@@ -1,5 +1,3 @@
-#include <solver.h >
-
 void setup()
 {
 }
