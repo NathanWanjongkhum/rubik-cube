@@ -8,21 +8,6 @@
 
 using namespace std;
 
-enum Color : char
-{
-    WHITE = 'u',
-    YELLOW = 'd',
-    RED = 'r',
-    ORANGE = 'l',
-    BLUE = 'f',
-    GREEN = 'b',
-};
-
-Color faces[6] = {WHITE, GREEN, RED, ORANGE, BLUE, YELLOW};
-
-const static uint8_t NUM_STICKERS = 54; // 6 faces * 9 stickers
-static char cube[NUM_STICKERS];
-
 /**
  * @brief For the move order instead of using primes to define counter-clockwise turns
  * it will just be capatalized.
@@ -30,26 +15,37 @@ static char cube[NUM_STICKERS];
  * CW  = u, d, r, l, f, b
  * CCW = U, D, R, L, F, B
  */
+
+const static uint8_t NUM_STICKERS = 54; // 6 faces * 9 stickers
+static char cube[NUM_STICKERS];
+
+const char faces[6] = {'u', 'd', 'r', 'l', 'f', 'b'};
+
 vector<char> solveOrder;
 
 void display()
 {
-    cout << "Cube: ";
-
-    for (uint8_t i = 0; i < NUM_STICKERS; i++)
+    for (size_t i = 0; i < 3; i++)
     {
-        cout << cube[i];
-    }
 
-    cout << endl;
+        for (uint8_t k = 0; k < (6 * 3); k++)
+        {
+
+            // FaceStart + RowStart + RowIndex
+            cout << cube[((k / 3) * 9) + (i * 3) + (k % 3)];
+
+            if (k % 3 == 2)
+                cout << " ";
+        }
+        cout << endl;
+    }
 }
 
 void rotate_face(uint8_t faceBeginIndex, bool isClockwise)
 {
     char rotatedFace[9];
-    uint8_t rotatedIndex;
 
-    uint8_t row, col;
+    uint8_t row, col, rotatedIndex;
     for (uint8_t i = 0; i < 9; i++)
     {
         row = i / 3;
@@ -58,20 +54,17 @@ void rotate_face(uint8_t faceBeginIndex, bool isClockwise)
         rotatedFace[rotatedIndex] = cube[faceBeginIndex + i];
     }
 
-    cout << "Face: ";
+    cout << "Face: " << rotatedFace[0] << endl;
+    // for (size_t i = 0; i < 9; i++)
+    // {
+    //     cout << rotatedFace[i];
+    // }
 
+    // Cant figure out how to memcopy in this case
     for (uint8_t i = 0; i < 9; i++)
     {
-        cout << rotatedFace[i];
+        cube[faceBeginIndex + i] = rotatedFace[i];
     }
-
-    cout << endl;    
-    // Cant figure out how to copy in this case 
-    for (uint8_t i = 0; i < 9; i++)
-    {
-        cube[faceBeginIndex + i] = 2;
-    }
-    
 }
 
 void turn_adjacent(int face, bool isClockwise)
@@ -89,8 +82,7 @@ void turn(char move)
     */
 
     bool isClockwise = islower(move);
-
-    Color face = (Color)tolower(move);
+    char face = tolower(move);
 
     uint8_t faceBeginIndex;
     for (uint8_t i = 0; i < 6; i++)
@@ -103,7 +95,7 @@ void turn(char move)
     }
 
     rotate_face(faceBeginIndex, isClockwise);
-    // turn_adjacent(face, isClockwise);
+    turn_adjacent(faceBeginIndex, isClockwise);
 }
 
 void verifySolve()
