@@ -16,7 +16,7 @@ using namespace std;
  * CCW = U, D, R, L, F, B
  */
 
-const static uint8_t NUM_STICKERS = 54; // 6 faces * 9 stickers
+const static int NUM_STICKERS = 54; // 6 faces * 9 stickers
 static char cube[NUM_STICKERS];
 
 const char faces[6] = {'u', 'd', 'r', 'l', 'f', 'b'};
@@ -25,28 +25,28 @@ vector<char> solveOrder;
 
 void display()
 {
-    for (size_t i = 0; i < 3; i++)
+    cout << "Cube: " << endl;
+    for (int row = 0; row < 3; row++)
     {
-
-        for (uint8_t k = 0; k < (6 * 3); k++)
+        for (int k = 0; k < 18; k++)
         {
-
             // FaceStart + RowStart + RowIndex
-            cout << cube[((k / 3) * 9) + (i * 3) + (k % 3)];
+            cout << cube[((k / 3) * 9) + (row * 3) + (k % 3)];
 
             if (k % 3 == 2)
                 cout << " ";
         }
+
         cout << endl;
     }
 }
 
-void rotate_face(uint8_t faceBeginIndex, bool isClockwise)
+void rotate_face(int faceBeginIndex, bool isClockwise)
 {
     char rotatedFace[9];
 
-    uint8_t row, col, rotatedIndex;
-    for (uint8_t i = 0; i < 9; i++)
+    int row, col, rotatedIndex;
+    for (int i = 0; i < 9; i++)
     {
         row = i / 3;
         col = i % 3;
@@ -54,20 +54,14 @@ void rotate_face(uint8_t faceBeginIndex, bool isClockwise)
         rotatedFace[rotatedIndex] = cube[faceBeginIndex + i];
     }
 
-    cout << "Face: " << rotatedFace[0] << endl;
-    // for (size_t i = 0; i < 9; i++)
-    // {
-    //     cout << rotatedFace[i];
-    // }
-
     // Cant figure out how to memcopy in this case
-    for (uint8_t i = 0; i < 9; i++)
+    for (int i = 0; i < 9; i++)
     {
         cube[faceBeginIndex + i] = rotatedFace[i];
     }
 }
 
-void turn_adjacent(int face, bool isClockwise)
+void turn_adjacent(int faceBeginIndex, bool isClockwise)
 {
 }
 
@@ -84,12 +78,12 @@ void turn(char move)
     bool isClockwise = islower(move);
     char face = tolower(move);
 
-    uint8_t faceBeginIndex;
-    for (uint8_t i = 0; i < 6; i++)
+    int faceBeginIndex;
+    for (int i = 0; i < 6; i++)
     {
         if (face == faces[i])
         {
-            faceBeginIndex = i * 9 - 1;
+            faceBeginIndex = i * 9;
             break;
         }
     }
@@ -100,8 +94,8 @@ void turn(char move)
 
 void verifySolve()
 {
-    uint8_t face, sticker;
-    for (uint8_t i = 0; i < NUM_STICKERS; i++)
+    int face, sticker;
+    for (int i = 0; i < NUM_STICKERS; i++)
     {
         // Calculate the face index and sticker index based on the array index
         face = i / 9;
@@ -117,8 +111,8 @@ void verifySolve()
 
 int main()
 {
-    uint8_t face, sticker;
-    for (uint8_t i = 0; i < NUM_STICKERS; i++)
+    int face, sticker;
+    for (int i = 0; i < NUM_STICKERS; i++)
     {
         // Calculate the face index and sticker index based on the array index
         face = i / 9;
